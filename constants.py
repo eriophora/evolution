@@ -1,16 +1,16 @@
 '''
-# Exports a set of variables that govern the high-level behavior of the
-# simulation. Above each variable is an explanation of what that
-# variable is and what it does.
-#
-# Also exports a set of functions that are required for initialization.
-#
-#
-# Note: All variables use _ to separate words. Since these variables are
-# to be global (i.e., constants), they are named in all UPPERCASE.
-# Functions use camelCase.
-#
-# Created by NPD on 11/20/14
+Exports a set of variables that govern the high-level behavior of the
+simulation. Above each variable is an explanation of what that
+variable is and what it does.
+
+Also exports a set of functions that are required for initialization.
+
+
+Note: All variables use _ to separate words. Since these variables are
+to be global (i.e., constants), they are named in all UPPERCASE.
+Functions use camelCase.
+
+Created by NPD on 11/20/14
 '''
 ########################################################################
 # Game board options
@@ -67,6 +67,40 @@ GENOME_TYPE = 'unary'
 # defiend, if GENOME_TYPE is 'binary', then (1/3)*(4^(n+1)-1) genes are
 # defined.
 GENE_LENGTH = 6
+
+# NAME_LENGTH is the number of characters in the 'name' (a stirng that
+# may or may not uniquely identify this agent). The name can be thought
+# of as a phenotype.
+NAME_LENGTH = 25
+
+# N_POS_ACTIONS is the number of behaviors that the agent can undertake.
+# It must be at least 2 (for cooperate / defect). The mapping from
+# action number to action is defined in the agent.
+N_POS_ACTIONS = 4
+'''
+On trust:
+When an agent encounters another agent, it will decide whether to play
+with them in a semi-random manner. First, they will count the number of
+ways in which this potential opponent is different from them, using
+the opponent's name. If we let this number be N, then the probbility
+that agent A will play agent B is given by:
+
+P = 1 / (1 + exp((N - TRUST_PARAMETER)/TRUST_SCALE_FACTOR))
+
+This is a logistic function that gets higher as N gets lower. As the
+agent becomes less and less trustful, the curve slides closer and
+closer to N = 0.
+'''
+# TRUST_PARAMETER relates how much a given agent trusts another agent
+# with a different name / phenotype. This is the default value; agents
+# can (and will) change this value as the game evolves. If the trust
+# parameter is closer to the name length, then the agent will be more
+# trusting.
+TRUST_PARAMETER = 25
+
+# TRUST_SCALE_FACTOR adjusts the trust falloff--higher values of
+# TRUST_SCALE_FACTOR mean that the trust falloff curve is less steep.
+TRUST_SCALE_FACTOR = 2.
 ########################################################################
 # Prisoner's Dilemma options
 ########################################################################
@@ -86,6 +120,35 @@ CONTINUE_PROB = 3./4
 # that T > R > P > S
 PAYOFF = {'t':6,'r':3,'p':0,'s':-3}
 
+# GAMES_PER_ITER is the number of games each agent is allowed to gain
+# fitness from each iteration.
+GAMES_PER_ITER = 3.
+
+# REFUSE_PENALTY dictates the cost of refusing to play with an opponent.
+# If REFUSE_PENALTY is 1, then refusing to play is effectively like
+# giving up an entire games worth of potential fitness.
+#
+# NOTE: This refers to a decrease in the number of potential games you
+# can play, it does NOT refer to a decrease in fitness earned that
+# round!
+REFUSE_PENALTY = 0.5
+
+# DENIED_PENALTY is the cost of being refused. I.e., if agent B refuses
+# to play with you. In general, DENIED_PENALTY should be less than
+# REFUSE_PENALTY.
+#
+# NOTE: This refers to a decrease in the number of potential games you
+# can play, it does NOT refer to a decrease in fitness earned that
+# round!
+DENIED_PENALTY  = 0.25
+
+# MOVE_COST is the cost of moving from one tile to another. If we later
+# introduce the capacity for agents to move on their own, choosing when
+# and where to move, then moving will have to incur a cost.
+MOVE_COST = 0
+########################################################################
+# Other options
+########################################################################
 # VERBOSITY is the verboseness of the output. It is an integer, where
 # the integer indicates the priority of a given message required to
 # print out. If VERBOSITY is 0, then no messages are printed.
