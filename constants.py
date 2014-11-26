@@ -68,15 +68,45 @@ GENOME_TYPE = 'unary'
 # defined.
 GENE_LENGTH = 6
 
-# NAME_LENGTH is the number of characters in the 'name' (a stirng that
+# NAME_LENGTH is the number of characters in the 'name' (a string that
 # may or may not uniquely identify this agent). The name can be thought
 # of as a phenotype.
 NAME_LENGTH = 25
 
 # N_POS_ACTIONS is the number of behaviors that the agent can undertake.
 # It must be at least 2 (for cooperate / defect). The mapping from
-# action number to action is defined in the agent.
-N_POS_ACTIONS = 4
+# action number to action in performAction
+N_POS_ACTIONS = 9
+
+# defaultPerformAction performs the set of operations that are mapped
+# to a given action value. The action set is currently:
+#                   coop    def     quit
+# no trust change   0       1       2
+# increment trust   3       4       5
+# decrement trust   6       7       8
+#
+# it is provided as input to the agent, which then sets it as a method.
+def defaultPerformAction(self, action):
+    if action > 5:
+        # decrement trust parameter
+        self.decTrustParameter()
+    elif action > 2:
+        # increment trust parameter
+        self.incTrustParameter()
+    if not (action) % 3:
+        return self.cooperate()
+    elif not (action - 1) % 3:
+        return self.defect()
+    elif not (action - 2) % 3:
+        return self.quit()
+
+# returnRandomID returns a string of random numbers and characters
+# that serve to uniquely ID an agent.
+from random import choice
+def returnRandomID(length = 20):
+    chooseChar = lambda: choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+    return ''.join([chooseChar() for x in range(length)])
+
 '''
 On trust:
 When an agent encounters another agent, it will decide whether to play
@@ -101,6 +131,10 @@ TRUST_PARAMETER = 25
 # TRUST_SCALE_FACTOR adjusts the trust falloff--higher values of
 # TRUST_SCALE_FACTOR mean that the trust falloff curve is less steep.
 TRUST_SCALE_FACTOR = 2.
+
+# TRUST_INCREMENT_PARAMETER indicates how much to increase or decrease
+# the trust parameter on each update.
+TRUST_INCREMENT_PARAMETER = 0.5
 ########################################################################
 # Prisoner's Dilemma options
 ########################################################################
@@ -109,6 +143,10 @@ TRUST_SCALE_FACTOR = 2.
 # probability of continuation is p, then the expected number of games is
 # p / (1-p)
 CONTINUE_PROB = 3./4
+
+# HISTORY_LENGTH is merely the number of moves to record. It must be
+# equal to GENE_LENGTH
+HISTORY_LENGTH = GENE_LENGTH
 
 # PAYOFF defines the payoff values for the 4 possible situations. If
 # your opponent / confederate is player B, then...
@@ -146,6 +184,27 @@ DENIED_PENALTY  = 0.25
 # introduce the capacity for agents to move on their own, choosing when
 # and where to move, then moving will have to incur a cost.
 MOVE_COST = 0
+
+# COOP_SIGNAL is the value to send to the game master when cooperating
+COOP_SIGNAL = 1
+
+# DEFECT_SIGNAL is the value to send to the game master when defecting
+DEFECT_SIGNAL = 0
+
+# QUIT_SIGNAL is the value to send to the game master when quitting
+QUIT_SIGNAL = -1
+
+# PAYOFF_MAP is an equivalent implementation of PAYOFF, but defines
+# it in terms of a map that can be indexed into. I.e, the fitness update
+# for A given A and B have actions aA and aB is given by PAYOFF_MAP[aA][aB]
+PAYOFF_MAP = {DEFECT_SIGNAL:{COOP_SIGNAL:PAYOFF['t'],
+                             DEFECT_SIGNAL:PAYOFF['p']},
+              COOP_SIGNAL:{COOP_SIGNAL:PAYOFF['r'],
+                           DEFECT_SIGNAL:PAYOFF['s']}}
+
+# ACTION_LABELS is for convenience, it maps actions to natural language
+# interpretations.
+ACTION_LABELS = {DEFECT_SIGNAL:'DEFECT', COOP_SIGNAL:'COOPERATE'}
 ########################################################################
 # Other options
 ########################################################################
@@ -158,7 +217,7 @@ VERBOSITY = 2
 # whether or not to print out that message based on the value of
 # VERBOSITY. Note that lower values of <priority> indicate higher
 # priority. (1 is the highest)
-def printMsg(msg, priority):
+def printMsg(msg, priority = 2):
     if not VERBOSITY:
         return
     if priority <= VERBOSITY:
@@ -173,9 +232,7 @@ assert GRID_RANDOM and N_ROWS > 0 and N_COLS > 0, 'MUST HAVE POSITIVE ROWS / COL
 assert GRID_RANDOM or len(GRID), 'MUST USE RANDOM GRID OR DEFINED GRID'
 assert GENOME_TYPE == 'unary' or GENOM_TYPE == 'binary', 'GENOME_TYPE MUST BE EITHER UNARY OR BINARY'
 assert GENE_LENGTH >= 0, 'CANNOT HAVE NEGATIVE GENE LENGTH'
-
-
-
+assert HISTORY_LENGTH == GENE_LENGTH, 'HISTORY_LENGTH AND GENE_LENGTH MUST BE EQUAL'
 
 
 

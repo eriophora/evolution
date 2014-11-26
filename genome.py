@@ -20,6 +20,7 @@ by converting the strings into sequences of numbers, or somesuch.
 Whether or not we have to do this will depend on how efficiently our
 computers can run the simulation.
 '''
+
 from random import randint      # to generate gene behaviors
 from random import random       # to mutate genes / names
 from random import choice       # to generate names

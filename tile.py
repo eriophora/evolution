@@ -17,7 +17,7 @@ from numpy.random import choice as npchoice
 from random import choice
 from constants import *
 
-class tile():
+class Tile():
     def __init__(self, location, transition_prob = 1):
         # location dictates where on the game board this tile is.
         # transition_prob is the likelihood that an agent that attempts
@@ -69,15 +69,15 @@ class tile():
                 agent_b = choice(self.agents)
             else:
                 agent_a, agent_b = npchoice(self.agents_to_play, 2, False)
-            if agent_a.moves_remaining or agent_b.moves_remaining:
+            if agent_a.available_moves >= 1 or agent_b.available_moves >= 1:
                 # i.e., if either have something left that they
                 # can gain.
                 break
             self.agents_to_play.remove(agent_a)
             self.agents_to_play.remove(agent_b)
-        if not agent_a.moves_remaining:
+        if agent_a.available_moves < 1:
             self.agents_to_play.remove(agent_a)
-        if not agent_b.moves_remaining:
+        if agent_b.available_moves < 1:
             self.agents_to_play.remove(agent_b)
         return (agent_a, agent_b)
 
