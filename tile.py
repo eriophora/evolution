@@ -37,20 +37,21 @@ class Tile():
         # is to be called after each iteration is completed.
         # in the case of tiles, all that this does is rebuild the
         # playing queue.
-        self._buildQueue
+        self._buildQueue()
     def acceptAgent(self, agent):
         # this decides whether or not to accept an agent onto this tile,
         # potentially be checking whether or not the agent is in a
         # neighboring tile.
-        if not agent.tile in self.neighbors:
-            return
+        if agent.tile == None:
+            agent.tile = self
+            self.agents.append(agent)
         if random() <= self.transition_prob:
             if agent.tile != None:
                 # then the agent may enter the tile.
                 # remove the agent from the other tile
                 agent.tile.removeAgent(agent)
-                # change that agent's tile
-                agent.tile = self
+            # change that agent's tile
+            agent.tile = self
             # add this agent to the list of current agents
             self.agents.append(agent)
     def removeAgent(self, agent):
@@ -61,12 +62,18 @@ class Tile():
     def getPlayers(self):
         # returns two randomly chosen agents. If there are no such
         # agents remaining, simply return None.
+        if len(self.agents) < 2:
+            # only 0 or 1 agents -- that agent is, sadly, doomed to die
+            # with no fitness.
+            return None
         while True:
+            rem_both = True
             if not len(self.agents_to_play):
                 return None
             if len(self.agents_to_play) == 1:
                 agent_a = self.agents_to_play[0]
                 agent_b = choice(self.agents)
+                rem_both = False
             else:
                 agent_a, agent_b = npchoice(self.agents_to_play, 2, False)
             if agent_a.available_moves >= 1 or agent_b.available_moves >= 1:
@@ -74,10 +81,11 @@ class Tile():
                 # can gain.
                 break
             self.agents_to_play.remove(agent_a)
-            self.agents_to_play.remove(agent_b)
+            if rem_both:
+                self.agents_to_play.remove(agent_b)
         if agent_a.available_moves < 1:
             self.agents_to_play.remove(agent_a)
-        if agent_b.available_moves < 1:
+        if agent_b.available_moves < 1 and rem_both:
             self.agents_to_play.remove(agent_b)
         return (agent_a, agent_b)
 

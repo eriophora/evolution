@@ -1,0 +1,35 @@
+Constants file: baseline
+Statistics: mean_fitness
+Iterations: 1000
+ACTION_LABELS : {0: 'DEFECT', 1: 'COOPERATE'}
+ALWAYS_PLAY : False
+CONTINUE_PROB : 0.9
+COOP_SIGNAL : 1
+DEFECT_SIGNAL : 0
+DENIED_PENALTY : 0.25
+GAMES_PER_ITER : 8.0
+GENE_LENGTH : 4
+GENOME_TYPE : unary
+GRID : []
+GRID_RANDOM : True
+HISTORY_LENGTH : 4
+LEARNING_RATE : 0.05
+LEARN_TRUST : True
+MOVE : True
+MOVE_COST : 0
+MUTATION_PROB : 0.01
+NAME_LENGTH : 25
+NUM_AGENTS : 1000
+N_COLS : 10
+N_POS_ACTIONS : 3
+N_ROWS : 10
+OVERRIDE_ASSERTIONS : False
+PAYOFF : {'p': 0, 's': -3, 'r': 3, 't': 6}
+PAYOFF_MAP : {0: {0: 0, 1: 6}, 1: {0: -3, 1: 3}}
+QUIT_SIGNAL : -1
+REFUSE_PENALTY : 0.5
+TRUST_INCREMENT_PARAMETER : 0.5
+TRUST_PARAMETER : 25
+TRUST_SCALE_FACTOR : 2.0
+VERBOSITY : 2
+np : <module 'numpy' from '/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/numpy/__init__.pyc'>

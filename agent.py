@@ -15,31 +15,43 @@ Created by NPD on 11/23/14
 from random import random
 from random import choice
 from genome import Genome
+from trust import Trust
 from constants import *
 from math import exp
 
 class Agent():
-    def __init__(self, tile = None, genome = None, trust_parameter = TRUST_PARAMETER, performAction = None):
+    def __init__(self, tile = None, genome = None, trust_parameter = None, performAction = None):
         self.performAction = performAction
         if performAction == None:
             self.performAction = defaultPerformAction
+        if trust_parameter == None:
+            trust_parameter = TRUST_PARAMETER
         self.trust_parameter = trust_parameter
+        if LEARN_TRUST:
+            self.trust = Trust()
         self.genome = genome
+        self.tile = None
         if genome == None:
-             # then generate your own genome
-             self.genome = Genome()
+            # then generate your own genome
+            self.genome = Genome()
+        self.statistics = self.genome.statistics
         self.name = self.genome.name
-        self.tile = tile
         self.available_moves = GAMES_PER_ITER
         self.fitness = 0
         self.ID = returnRandomID()
-        self.move()
+        self.parents = []
+        self.games_played = 0
+        tile.acceptAgent(self)
     def reproduce(self):
         # returns a child of this agent.
         child = Agent(self.tile, None, self.trust_parameter, self.performAction)
         childGenome = self.genome.mutate()
         child.genome = childGenome
         child.name = child.genome.name
+        child.parents = [x for x in self.parents]
+        child.parents.append((self.ID, self.fitness))
+        if LEARN_TRUST:
+            child.trust = self.trust.reproduce() # no more telepathy!
         return child
     def cooperate(self):
         # returns the cooperate signal
@@ -72,11 +84,19 @@ class Agent():
         # names.
         name_diffs = sum([x[0]!=x[1] for x in zip(self.name, agent.name)])
         return 1./(1+exp((name_diffs - self.trust_parameter)*1./TRUST_SCALE_FACTOR))
+    def updateTrust(self, agent, delta_fitness):
+        # updates the agent's trust in accordance with the trust object.
+        self.trust.updateWeights(agent.name, delta_fitness)
     def decideToPlay(self, agent):
         # accepts an agent as input and decides whether or not to play
         # with them
-        p = self.trustFunction(agent)
-        return random() <= p
+        if ALWAYS_PLAY:
+            return True
+        if LEARN_TRUST:
+            return self.trust.decideToPlay(agent.name)
+        else:
+            p = self.trustFunction(agent)
+            return random() <= p
     def incTrustParameter(self):
         # increments the trust parameter
         self.trust_parameter += TRUST_INCREMENT_PARAMETER
@@ -87,6 +107,12 @@ class Agent():
         # decides on what action to take given the game's current history
         action_code = self.genome.getAction(history)
         return self.performAction(self, action_code)
+    def die(self):
+        # 'kills' the agent
+        self.tile.removeAgent(self)
+        # the World class will handle removing all the agents from its
+        # records each iteration.
+
 
 
 
