@@ -27,12 +27,14 @@ class World():
         self.mean_fitness = []
         self.mean_trust = []
         self.die_offs = []
+        self.mean_per_game_fitness = []
+        self.tot_games_played = []
         self.cur_mean_fitness = 0
         self.initializeStatistics()
     def initializeStatistics(self):
         # creates the data structure that will hold tile-by-tile statistics
-        statistic_names = ['num_agents','fitness','trust','mean','nice','vengeful','forgive','trusting','quitter','retreater']
-        global_statistic_names = ['mean','nice','vengeful','forgive','trusting','quitter','retreater']
+        statistic_names = ['num_agents','fitness','trust','per_game_fitness','tot_games'] + self.agents[0].stats.keys()
+        global_statistic_names = self.agents[0].stats.keys()
         self.statistics = dict()
         self.global_statistics = dict()
         for i in statistic_names:
@@ -42,9 +44,9 @@ class World():
     def updateStatistics(self):
         # updates all the per-tile statistics
         for i in self.global_statistics.keys():
-            self.global_statistics[i].append(mean([x.statistics[i] for x in self.agents]))
+            self.global_statistics[i].append(mean([x.stats[i][0]*1./x.stats[i][1] for x in self.agents if x.stats[i][1] > 0]))
         for i in self.statistics.keys():
-            new_stats = [[None for y in range(N_COLS)] for x in range(N_ROWS)]
+            new_stats = [[0 for y in range(N_COLS)] for x in range(N_ROWS)]
             for x,row in enumerate(self.tiles):
                 for y,tile in enumerate(row):
                     if i == 'num_agents':
@@ -53,9 +55,13 @@ class World():
                         new_stats[x][y] = mean([z.fitness for z in tile.agents])
                     elif i == 'trust':
                         new_stats[x][y] = mean([z.trust_parameter for z in tile.agents])
-                    else:
-                        new_stats[x][y] = mean([z.statistics[i] for z in tile.agents])
-            self.statistics[i].append(new_stats)
+                    elif i == 'per_game_fitness':
+                        if self.statistics['tot_games'][-1][x][y] > 0:
+                            new_stats[x][y] = sum([z.fitness for z in tile.agents])*.1/self.statistics['tot_games'][-1][x][y]
+                    elif i != 'tot_games': # tot_games updated elsewhere
+                        new_stats[x][y] = mean([z.stats[i][0]*1./z.stats[i][1] for z in tile.agents if z.stats[i][1] > 0])
+            if i!='tot_games':
+                self.statistics[i].append(new_stats)
     def instantiateTiles(self):
         # creates the tile world
         if not GRID_RANDOM:
@@ -89,8 +95,10 @@ class World():
             # move all the agents
             if MOVE:
                 agent.move()
-        for row in self.tiles:
-            for tile in row:
+        tot_games = 0
+        tile_tot_games = [[0 for y in range(N_COLS)] for x in range(N_ROWS)]
+        for x,row in enumerate(self.tiles):
+            for y,tile in enumerate(row):
                 printMsg('Playing %i agents in tile %s'%(len(tile.agents), str(tile.location)), 1)
                 # iterate the tile
                 tile.iterate()
@@ -99,10 +107,15 @@ class World():
                     agents = tile.getPlayers()
                     if agents == None:
                         break
-                    gameMaster(agents[0], agents[1])
+                    [_, game_played] = gameMaster(agents[0], agents[1])
+                    tot_games += game_played
+                    tile_tot_games[x][y] += game_played
+        self.statistics['tot_games'].append(tile_tot_games)
+        self.tot_games_played.append(tot_games)
+        self.mean_per_game_fitness.append(sum([x.fitness for x in self.agents]) * 1./tot_games)
         self.cur_mean_fitness = float(mean([x.fitness for x in self.agents]))
         self.mean_fitness.append(self.cur_mean_fitness)
-        printMsg('Fitness for iteration %i is %.3f'%(self.num_iterations, self.cur_mean_fitness),2)
+        printMsg('Fitness for iteration %i is %.3f (%.3fpg)'%(self.num_iterations, self.cur_mean_fitness, self.mean_per_game_fitness[-1]),2)
         tot_above_avg_fitness = sum([x.fitness for x in self.agents if x.fitness >= self.cur_mean_fitness])
         below_avg_agents = sum([1 for x in self.agents if x.fitness < self.cur_mean_fitness])
         self.die_offs.append(below_avg_agents)

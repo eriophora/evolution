@@ -14,17 +14,26 @@ for each experimental run.
 ########################################################################
 # experiment_list is a list of experiments to perform. It must be a
 # list.
-experiment_list = ['initial_run']
+experiment_list = ['optimal_play','worst_play','baseline','always_play',
+                   'no_world','only_CD','only_CD_always_play',
+                   'symmetric_payoff','long_genes']
 # iteration_list is a list of the number of iterations to run for each
 # experiment.
-iteration_list = 1000
+iteration_list = [10, 10, 1000,1000,1000,1000,1000,1000,1000]
 # constants_list is a list of files containing constants.
-constants_list = 'baseline'
+constants_list = ['all_c','all_d','baseline','always_play',
+                  'high_permeability','onlyCD','always_play_onlyCD',
+                  'symmetric_payoff','long_genes']
 # statistics_list is a list of all the statistics to write out each
 # iteration. It must be a list, but may also be a list of lists.
 statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
-                   'mean','nice','vengeful','forgive',
-                   'trusting','quitter','retreater']
+                   'vengeful','sucker','collaborator','cruel',
+                   'selective','traitor','retreating','popular',
+                   'forgiving','prisoner','timid','nice','tot_games',
+                   'per_game_fitness','mean_per_game_fitness',
+                   'tot_games_played']
+save_the_world = [False, False, True, False, False, True, False, True]
+save_tile_stats = True
 ########################################################################
 ##########CONSTANT PARAMETERS###########################################
 ########################################################################
@@ -32,8 +41,6 @@ statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
 root = '/Users/ndufour/Dropbox/Class/CS221/evolution/experiments'
 constant_dir = '/Users/ndufour/Dropbox/Class/CS221/evolution/constant_files' # the directory that contains all the constants
 abs_root = '/Users/ndufour/Dropbox/Class/CS221/evolution/'
-save_the_world = True
-save_tile_stats = True
 ########################################################################
 ########################################################################
 ########################################################################
@@ -43,6 +50,7 @@ import sys
 import shutil
 import cPickle
 from numpy import mean
+import pdb, sys
 def mkdir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -53,14 +61,23 @@ if not type(iteration_list) == list:
     iteration_list = [iteration_list]
 if not type(constants_list) == list:
     constants_list = [constants_list]
-if not type(statistics_list[0] == list):
-    statistics_list = [statstics_list]
+if not type(statistics_list[0]) == list:
+    statistics_list = [statistics_list]
+if not type(save_the_world) == list:
+    save_the_world = [save_the_world]
+if not type(save_tile_stats) == list:
+    save_tile_stats = [save_tile_stats]
+
 if not len(experiment_list) == len(iteration_list):
     iteration_list *= len(experiment_list)
 if not len(experiment_list) == len(constants_list):
-    constants_list *= len(experiment_list)
+    iteration_list *= len(experiment_list)
 if not len(experiment_list) == len(statistics_list):
     statistics_list *= len(experiment_list)
+if not len(experiment_list) == len(save_the_world):
+    save_the_world *= len(experiment_list)
+if not len(experiment_list) == len(save_tile_stats):
+    save_tile_stats *= len(experiment_list)
 
 experiments = zip(experiment_list, iteration_list, constants_list, statistics_list)
 
@@ -98,7 +115,7 @@ for exp, iters, const, stats in experiments:
     w = world.World()
     for i in range(iters):
         w.iterate()
-    for stat in statistics_list:
+    for stat in stats:
         if stat == 'mean_fitness':
             f = open(os.path.join(exp_root, stat),'w')
             for val in w.mean_fitness:
@@ -114,6 +131,16 @@ for exp, iters, const, stats in experiments:
             for val in w.mean_trust:
                 f.write('%.3f\n'%val)
             f.close()
+        elif stat == 'mean_per_game_fitness':
+            f = open(os.path.join(exp_root, stat),'w')
+            for val in w.mean_per_game_fitness:
+                f.write('%.3f\n'%val)
+            f.close()
+        elif stat == 'tot_games_played':
+            f = open(os.path.join(exp_root, stat),'w')
+            for val in w.tot_games_played:
+                f.write('%.3f\n'%val)
+            f.close()
         else:
             if save_tile_stats:
                 for i in range(iters):
@@ -121,10 +148,8 @@ for exp, iters, const, stats in experiments:
                     for row in w.statistics[stat][i]:
                         for tile in row:
                             f.write('%.3f,'%tile)
-                            cur_vals.append(tile)
                         f.write('\n')
                     f.close()
-                    avg.append(mean(cur_vals))
             if stat in w.global_statistics:
                 f = open(os.path.join(exp_root, 'global_'+stat), 'w')
                 for i in w.global_statistics[stat]:

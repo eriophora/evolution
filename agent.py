@@ -34,7 +34,7 @@ class Agent():
         if genome == None:
             # then generate your own genome
             self.genome = Genome()
-        self.statistics = self.genome.statistics
+        # self.statistics = self.genome.statistics
         self.name = self.genome.name
         self.available_moves = GAMES_PER_ITER
         self.fitness = 0
@@ -42,6 +42,51 @@ class Agent():
         self.parents = []
         self.games_played = 0
         tile.acceptAgent(self)
+        self.initializeStatistics()
+    def initializeStatistics(self):
+        # instantiates the data structure to hold the statistics
+        # in lieu of the old (gene-centric) way of computing statistics,
+        # now they are updated by gameMaster based on actions that were
+        # actually executed, as well as by the decideAction() function.
+        # Each statistic is intended to be displayed as a ratio, where
+        # the first value is the number of times that situation happend
+        # versus the number of times that situation COULD have happened
+        stats = dict()
+        stats['popular'] = [0, 0] # the frequency with which other agents agree to play with this agent
+        stats['selective'] = [0, 0] # the frequency with which this agent agrees to play with other agents
+        stats['collaborator'] = [0, 0] # cooperated with a cooperator
+        stats['sucker'] = [0, 0] # cooperated against a defector
+        stats['traitor'] = [0, 0] # defected against a cooperator
+        stats['prisoner'] = [0, 0] # defected against a defector
+        stats['cruel'] = [0, 0] # defected following a cooperation
+        stats['nice'] = [0, 0] # cooperated following a cooperation
+        stats['forgiving'] = [0, 0] # cooperated following a defection
+        stats['vengeful'] = [0, 0] # defected following a defection
+        stats['timid'] = [0, 0] # quit following a cooperation
+        stats['retreating'] = [0, 0] # quit following a defection
+        self.stats = stats
+        # stats_to_increment is a map of stats whose total must be
+        # incremented given the opponent's previous action
+        self.stats_to_increment = {COOP_SIGNAL:['cruel','nice','timid'], DEFECT_SIGNAL:['forgiving','vengeful','retreating']}
+        # stat_update_map is a dict() where
+        # stat_update_map[preceeding_opponent_move][your_signal] = the
+        # stat to increment.
+        stat_update_map = dict()
+        coop_d = {COOP_SIGNAL:'nice',DEFECT_SIGNAL:'cruel',QUIT_SIGNAL:'timid'}
+        defe_d = {COOP_SIGNAL:'forgiving',DEFECT_SIGNAL:'vengeful',QUIT_SIGNAL:'retreating'}
+        stat_update_map[COOP_SIGNAL] = coop_d
+        stat_update_map[DEFECT_SIGNAL] = defe_d
+        self.stat_update_map = stat_update_map
+    def decideAction(self, history):
+        # decides on what action to take given the game's current history
+        action_code = self.genome.getAction(history)
+        signal = self.performAction(self, action_code)
+        if len(history):
+            opp_move = int(history[-1])
+            for cur_stat in self.stats_to_increment[opp_move]:
+                self.stats[cur_stat][1] += 1
+            self.stats[self.stat_update_map[opp_move][signal]][0]+=1
+        return signal
     def reproduce(self):
         # returns a child of this agent.
         child = Agent(self.tile, None, self.trust_parameter, self.performAction)
@@ -103,10 +148,6 @@ class Agent():
     def decTrustParameter(self):
         # decrements the trust parameter
         self.trust_parameter -= TRUST_INCREMENT_PARAMETER
-    def decideAction(self, history):
-        # decides on what action to take given the game's current history
-        action_code = self.genome.getAction(history)
-        return self.performAction(self, action_code)
     def die(self):
         # 'kills' the agent
         self.tile.removeAgent(self)

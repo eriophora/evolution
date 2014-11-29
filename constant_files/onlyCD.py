@@ -1,5 +1,6 @@
 '''
-Always cooperate -- this is the optimal play version
+Agents may either cooperate or defect -- there is no option to quit a
+game.
 '''
 ########################################################################
 # Game board options
@@ -78,7 +79,7 @@ NAME_LENGTH = 25
 # N_POS_ACTIONS is the number of behaviors that the agent can undertake.
 # It must be at least 2 (for cooperate / defect). The mapping from
 # action number to action in performAction
-N_POS_ACTIONS = 3
+N_POS_ACTIONS = 2
 
 # MOVE indicates whether or not the agents can move
 MOVE = True
@@ -157,7 +158,6 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice

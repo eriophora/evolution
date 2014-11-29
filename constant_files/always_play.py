@@ -1,5 +1,5 @@
 '''
-Always cooperate -- this is the optimal play version
+Agents must always play against each other, they are unable to quit.
 '''
 ########################################################################
 # Game board options
@@ -54,7 +54,7 @@ MUTATION_PROB = 0.01
 # ALWAYS_PLAY is a boolean that indicates whether or not the agent
 # should *always* choose to play against any other agent. If False, it
 # will use the trust parameter/learned trust algorithm.
-ALWAYS_PLAY = False
+ALWAYS_PLAY = True
 
 # GENOME_TYPE dictates the kinds of event sequences stored in the
 # genome. It can be 'unary', in which case the genome only stores the
@@ -157,7 +157,6 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice

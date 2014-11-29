@@ -1,5 +1,6 @@
 '''
-Always cooperate -- this is the optimal play version
+Here, the gene length is higher than the expected number of games,
+allowing for end-game strategy.
 '''
 ########################################################################
 # Game board options
@@ -68,7 +69,7 @@ GENOME_TYPE = 'unary'
 # 'unary', then a GENE_LENGTH of n means that 2^(n+1)-1 genes are
 # defiend, if GENOME_TYPE is 'binary', then (1/3)*(4^(n+1)-1) genes are
 # defined.
-GENE_LENGTH = 4
+GENE_LENGTH = 8
 
 # NAME_LENGTH is the number of characters in the 'name' (a string that
 # may or may not uniquely identify this agent). The name can be thought
@@ -157,7 +158,6 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice
@@ -200,7 +200,7 @@ TRUST_INCREMENT_PARAMETER = 0.5
 # will end after a given iteration. Keep in mind that if the
 # probability of continuation is p, then the expected number of games is
 # p / (1-p)
-CONTINUE_PROB = 9./10
+CONTINUE_PROB = 6./7
 
 # HISTORY_LENGTH is merely the number of moves to record. It must be
 # equal to GENE_LENGTH

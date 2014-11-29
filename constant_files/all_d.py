@@ -1,5 +1,5 @@
 '''
-Always cooperate -- this is the optimal play version
+Always defect -- most suboptimal play.
 '''
 ########################################################################
 # Game board options
@@ -157,7 +157,7 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
+defaultPerformAction = allD
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice

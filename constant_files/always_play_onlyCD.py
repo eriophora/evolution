@@ -1,5 +1,16 @@
 '''
-Always cooperate -- this is the optimal play version
+Exports a set of variables that govern the high-level behavior of the
+simulation. Above each variable is an explanation of what that
+variable is and what it does.
+
+Also exports a set of functions that are required for initialization.
+
+
+Note: All variables use _ to separate words. Since these variables are
+to be global (i.e., constants), they are named in all UPPERCASE.
+Functions use camelCase.
+
+Created by NPD on 11/20/14
 '''
 ########################################################################
 # Game board options
@@ -54,7 +65,7 @@ MUTATION_PROB = 0.01
 # ALWAYS_PLAY is a boolean that indicates whether or not the agent
 # should *always* choose to play against any other agent. If False, it
 # will use the trust parameter/learned trust algorithm.
-ALWAYS_PLAY = False
+ALWAYS_PLAY = True
 
 # GENOME_TYPE dictates the kinds of event sequences stored in the
 # genome. It can be 'unary', in which case the genome only stores the
@@ -78,7 +89,7 @@ NAME_LENGTH = 25
 # N_POS_ACTIONS is the number of behaviors that the agent can undertake.
 # It must be at least 2 (for cooperate / defect). The mapping from
 # action number to action in performAction
-N_POS_ACTIONS = 3
+N_POS_ACTIONS = 2
 
 # MOVE indicates whether or not the agents can move
 MOVE = True
@@ -157,7 +168,6 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice

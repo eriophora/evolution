@@ -1,5 +1,6 @@
 '''
-Always cooperate -- this is the optimal play version
+There is only one tile, so the probability of any agent up against any
+other agent is uniform.
 '''
 ########################################################################
 # Game board options
@@ -12,11 +13,11 @@ GRID_RANDOM = True
 
 # N_COLS is an integers that returns the number of columns in the game
 # board.
-N_COLS = 10
+N_COLS = 1
 
 # N_ROWS is an integer that returns the number of rows in the game
 # board.
-N_ROWS = 10
+N_ROWS = 1
 
 # transProbFcn returns a transition probability. It is called with no
 # inputs (if you want to assign specific values to specific tiles, set
@@ -157,7 +158,6 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice

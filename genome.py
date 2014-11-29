@@ -36,36 +36,36 @@ class Genome():
             self._generateName()
         else:
             self.name = name
-        self._computeStatistics()
-    def _computeStatistics(self):
-        # computes some statistics about the genome
-        # we're going to have some parameters:
-        # - mean: how often the agent defects given a previous cooperation
-        # - nice: how often the agent cooperates following a cooperation
-        # - forgive: how often the agent cooperates following a defection
-        # - vengeful: how often the agent defects following a defection
-        # - trusting: how many of the agent's actions result in increasing
-        #             the trust parameter, or no change
-        # - quitter: how often the agent quits
-        # - retreater: how often the agent quits following a defection
-        k = self.gene_map.keys()
-        coop = filter(lambda x: not len(x) or x[-1]==str(COOP_SIGNAL), k)
-        defe = filter(lambda x: not len(x) or x[-1]==str(DEFECT_SIGNAL), k)
-        mean_genes = sum([self.gene_map[x] in [1,4,7] for x in coop])
-        nice_genes = sum([self.gene_map[x] in [0,3,6] for x in coop])
-        vengeful_genes = sum([self.gene_map[x] in [1,4,7] for x in defe])
-        forgive_genes = sum([self.gene_map[x] in [0,3,6] for x in defe])
-        trusting = sum([self.gene_map[x] in [0,1,2,3,4,5] for x in k])
-        quitter = sum([self.gene_map[x] in [2,5,8] for x in k])
-        retreater = sum([self.gene_map[x] in [2,5,8] for x in defe])
-        self.statistics = dict()
-        self.statistics['mean'] = mean_genes * 1./len(coop)
-        self.statistics['nice'] = nice_genes * 1./len(coop)
-        self.statistics['vengeful'] = vengeful_genes * 1./len(defe)
-        self.statistics['forgive'] = forgive_genes * 1./len(defe)
-        self.statistics['trusting'] = trusting * 1./len(k)
-        self.statistics['quitter'] = quitter * 1./len(k)
-        self.statistics['retreater'] = retreater * 1./len(defe)
+        # self._computeStatistics()
+    # def _computeStatistics(self):
+    #     # computes some statistics about the genome
+    #     # we're going to have some parameters:
+    #     # - mean: how often the agent defects given a previous cooperation
+    #     # - nice: how often the agent cooperates following a cooperation
+    #     # - forgive: how often the agent cooperates following a defection
+    #     # - vengeful: how often the agent defects following a defection
+    #     # - trusting: how many of the agent's actions result in increasing
+    #     #             the trust parameter, or no change
+    #     # - quitter: how often the agent quits
+    #     # - retreater: how often the agent quits following a defection
+    #     k = self.gene_map.keys()
+    #     coop = filter(lambda x: not len(x) or x[-1]==str(COOP_SIGNAL), k)
+    #     defe = filter(lambda x: not len(x) or x[-1]==str(DEFECT_SIGNAL), k)
+    #     mean_genes = sum([self.gene_map[x] in [1,4,7] for x in coop])
+    #     nice_genes = sum([self.gene_map[x] in [0,3,6] for x in coop])
+    #     vengeful_genes = sum([self.gene_map[x] in [1,4,7] for x in defe])
+    #     forgive_genes = sum([self.gene_map[x] in [0,3,6] for x in defe])
+    #     trusting = sum([self.gene_map[x] in [0,1,2,3,4,5] for x in k])
+    #     quitter = sum([self.gene_map[x] in [2,5,8] for x in k])
+    #     retreater = sum([self.gene_map[x] in [2,5,8] for x in defe])
+    #     self.statistics = dict()
+    #     self.statistics['mean'] = mean_genes * 1./len(coop)
+    #     self.statistics['nice'] = nice_genes * 1./len(coop)
+    #     self.statistics['vengeful'] = vengeful_genes * 1./len(defe)
+    #     self.statistics['forgive'] = forgive_genes * 1./len(defe)
+    #     self.statistics['trusting'] = trusting * 1./len(k)
+    #     self.statistics['quitter'] = quitter * 1./len(k)
+    #     self.statistics['retreater'] = retreater * 1./len(defe)
     def _generateName(self):
         # generates a wholly random name, composed out of 1's and 0's.
         self.name = ''
@@ -110,7 +110,7 @@ class Genome():
         new_genome = copy(self)
         self._mutateGenome(mutation_rate, new_genome)
         self._mutateName(mutation_rate, new_genome)
-        new_genome._computeStatistics()
+        #new_genome._computeStatistics()
         return new_genome
     def _mutateGenome(self, mutation_rate, new_genome):
         # handles mutation of the genes on the child genome (new_genome)

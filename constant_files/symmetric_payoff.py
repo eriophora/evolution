@@ -1,5 +1,5 @@
 '''
-Always cooperate -- this is the optimal play version
+symmetric payoff
 '''
 ########################################################################
 # Game board options
@@ -157,7 +157,6 @@ if N_POS_ACTIONS == 9:
     # with trust modifications
     defaultPerformAction == normalPerformAction
 
-defaultPerformAction = allC
 # returnRandomID returns a string of random numbers and characters
 # that serve to uniquely ID an agent.
 from random import choice
@@ -214,7 +213,7 @@ HISTORY_LENGTH = GENE_LENGTH
 # If you defect, and B defects, you recieve the 'prisoners' payoff P
 # Note that, in order for this to be a valid Prisoner's dilemma, we have
 # that T > R > P > S
-PAYOFF = {'t':5,'r':3,'p':0,'s':-3}
+PAYOFF = {'t':4.5,'r':1.5,'p':-1.5,'s':-4.5}
 
 # GAMES_PER_ITER is the number of games each agent is allowed to gain
 # fitness from each iteration.

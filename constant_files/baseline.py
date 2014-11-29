@@ -150,6 +150,14 @@ def onlyCD(agent, action):
     else:
         return agent.defect()
 
+def allD(agent, action):
+    # always defect
+    return agent.defect()
+
+def allC(agent, action):
+    # always cooperate (optimal play)
+    return agent.cooperate()
+
 if N_POS_ACTIONS == 2:
     #
     defaultPerformAction = onlyCD
@@ -216,7 +224,7 @@ HISTORY_LENGTH = GENE_LENGTH
 # If you defect, and B defects, you recieve the 'prisoners' payoff P
 # Note that, in order for this to be a valid Prisoner's dilemma, we have
 # that T > R > P > S
-PAYOFF = {'t':6,'r':3,'p':0,'s':-3}
+PAYOFF = {'t':5,'r':3,'p':0,'s':-3}
 
 # GAMES_PER_ITER is the number of games each agent is allowed to gain
 # fitness from each iteration.
@@ -265,6 +273,13 @@ PAYOFF_MAP = {DEFECT_SIGNAL:{COOP_SIGNAL:PAYOFF['t'],
 # ACTION_LABELS is for convenience, it maps actions to natural language
 # interpretations.
 ACTION_LABELS = {DEFECT_SIGNAL:'DEFECT', COOP_SIGNAL:'COOPERATE'}
+
+# PAYOFF_LABELS is the same as PAYOFF_MAP, only it indicates which
+# statistic to increment in the agent's stats counters given a payoff
+PAYOFF_LABELS = {DEFECT_SIGNAL:{COOP_SIGNAL:'traitor',
+                             DEFECT_SIGNAL:'prisoner'},
+              COOP_SIGNAL:{COOP_SIGNAL:'collaborator',
+                           DEFECT_SIGNAL:'sucker'}}
 ########################################################################
 # Other options
 ########################################################################
