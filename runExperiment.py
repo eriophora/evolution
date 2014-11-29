@@ -14,9 +14,10 @@ for each experimental run.
 ########################################################################
 # experiment_list is a list of experiments to perform. It must be a
 # list.
-experiment_list = ['optimal_play','worst_play','baseline','always_play',
-                   'no_world','only_CD','only_CD_always_play',
-                   'symmetric_payoff','long_genes']
+experiment_list = ['nd_optimal_play','nd_worst_play','nd_baseline',
+                   'nd_always_play','nd_no_world','nd_only_CD',
+                   'nd_only_CD_always_play','nd_symmetric_payoff',
+                   'nd_long_genes']
 # iteration_list is a list of the number of iterations to run for each
 # experiment.
 iteration_list = [10, 10, 1000,1000,1000,1000,1000,1000,1000]
