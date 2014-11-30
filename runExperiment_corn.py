@@ -45,9 +45,9 @@ save_tile_stats = True
 ########################################################################
 # DO NOT CHANGE THESE
 home = os.getenv("HOME")
-root = os.path.join(home, 'Dropbox/Class/CS221/evolution/experiments')
-constant_dir = os.path.join(home,'Dropbox/Class/CS221/evolution/constant_files') # the directory that contains all the constants
-abs_root = os.path.join(home,'Dropbox/Class/CS221/evolution/')
+root = os.path.join(home, 'evolution/experiments')
+constant_dir = os.path.join(home,'evolution/constant_files') # the directory that contains all the constants
+abs_root = os.path.join(home,'evolution/')
 ########################################################################
 ########################################################################
 ########################################################################
