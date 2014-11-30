@@ -8,7 +8,12 @@ Each one of these may be a list. If you want to use the same statistics
 or number of iterations, then they will be duplicated over and over
 for each experimental run.
 '''
-
+import os
+import sys
+import shutil
+import cPickle
+from numpy import mean
+import pdb, sys
 ########################################################################
 ##########CONFIGURATION OPTIONS#########################################
 ########################################################################
@@ -20,7 +25,7 @@ experiment_list = ['nd_optimal_play','nd_worst_play','nd_baseline',
                    'nd_long_genes']
 # iteration_list is a list of the number of iterations to run for each
 # experiment.
-iteration_list = [10, 10, 1000,1000,1000,1000,1000,1000,1000]
+iteration_list = [10,10,500,1000,500,1000,1000,500,1000]
 # constants_list is a list of files containing constants.
 constants_list = ['all_c','all_d','baseline','always_play',
                   'high_permeability','onlyCD','always_play_onlyCD',
@@ -39,19 +44,14 @@ save_tile_stats = True
 ##########CONSTANT PARAMETERS###########################################
 ########################################################################
 # DO NOT CHANGE THESE
-root = '/Users/ndufour/Dropbox/Class/CS221/evolution/experiments'
-constant_dir = '/Users/ndufour/Dropbox/Class/CS221/evolution/constant_files' # the directory that contains all the constants
-abs_root = '/Users/ndufour/Dropbox/Class/CS221/evolution/'
+home = os.getenv("HOME")
+root = os.path.join(home, 'Dropbox/Class/CS221/evolution/experiments')
+constant_dir = os.path.join(home,'Dropbox/Class/CS221/evolution/constant_files') # the directory that contains all the constants
+abs_root = os.path.join(home,'Dropbox/Class/CS221/evolution/')
 ########################################################################
 ########################################################################
 ########################################################################
 # elaborate the stuff into a list
-import os
-import sys
-import shutil
-import cPickle
-from numpy import mean
-import pdb, sys
 def mkdir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -96,7 +96,7 @@ for exp, iters, const, stats in experiments:
     # this is the best way to do the constant file reloading. i know,
     # it's ridiculous, but whatever.
     constant_file = os.path.join(constant_dir, const + '.py')
-    target_constant_file = os.path.join(abs_root, 'constants.py')
+    target_constant_file = os.path.join(abs_root, 'constants_override.py')
     shutil.copy(constant_file, target_constant_file)
     exp_root = os.path.join(root, exp)
     exp_iter_root = os.path.join(exp_root, 'iterations')
@@ -107,7 +107,7 @@ for exp, iters, const, stats in experiments:
     f.write('Constants file: %s\n'%const)
     f.write('Statistics: %s\n'%str(stats))
     f.write('Iterations: %s\n'%str(iters))
-    module = __import__('constants', globals(), locals(), ['*'])
+    module = __import__('constants_override', globals(), locals(), ['*'])
     for k in dir(module):
         if not hasattr(getattr(module, k), '__call__') and '__' not in k:
             f.write('%s : %s\n'%(k, str(getattr(module, k))))

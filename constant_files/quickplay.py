@@ -23,11 +23,11 @@ GRID_RANDOM = True
 
 # N_COLS is an integers that returns the number of columns in the game
 # board.
-N_COLS = 10
+N_COLS = 2
 
 # N_ROWS is an integer that returns the number of rows in the game
 # board.
-N_ROWS = 10
+N_ROWS = 2
 
 # transProbFcn returns a transition probability. It is called with no
 # inputs (if you want to assign specific values to specific tiles, set
@@ -46,7 +46,7 @@ GRID = []
 
 # NUM_AGENTS is the number of agents that should be on the board at any
 # given time.
-NUM_AGENTS = 1000
+NUM_AGENTS = 100
 
 # neighborCords defines the relational indices of the neighbors.
 def neighborCords(location):
@@ -210,12 +210,7 @@ TRUST_INCREMENT_PARAMETER = 0.5
 # will end after a given iteration. Keep in mind that if the
 # probability of continuation is p, then the expected number of games is
 # p / (1-p)
-CONTINUE_PROB = 1
-
-# EXPECTED_TURNS is the expected number of turns to be played, since
-# CONTINUE_PROB is now depricated (turn probability is drawn from a
-# poisson distibution)
-EXPECTED_TURNS = 8
+CONTINUE_PROB = 9./10
 
 # HISTORY_LENGTH is merely the number of moves to record. It must be
 # equal to GENE_LENGTH
@@ -309,8 +304,6 @@ def printMsg(msg, priority = 0):
 ########################################################################
 # Assertions: If these fail, then your simulation will either fail or be
 # invalid for some reason.
-from constants_override import *
-
 if not OVERRIDE_ASSERTIONS:
     assert PAYOFF['t'] > PAYOFF['r'], 'FIX PAYOFF, T > R > P > S'
     assert PAYOFF['r'] > PAYOFF['p'], 'FIX PAYOFF, T > R > P > S'

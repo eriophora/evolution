@@ -6,7 +6,7 @@ also updates their fitness.
 '''
 
 from constants import *
-from random import random
+from numpy.random import poisson
 
 def gameMaster(agent_a, agent_b):
     agent_a_actions = ''
@@ -44,7 +44,9 @@ def gameMaster(agent_a, agent_b):
     num_rounds = 0
     printMsg('Game start. Agent A fitness %i, Agent B fitness %i'%(agent_a.fitness, agent_b.fitness))
     history.append('Game start. Agent A fitness %i, Agent B fitness %i'%(agent_a.fitness, agent_b.fitness))
-    while True:
+    n_turns = int(poisson(EXPECTED_TURNS))
+    #while True:
+    for i in range(n_turns):
         if random() > CONTINUE_PROB:
             printMsg('Game is over after %i rounds'%num_rounds)
             history.append('Game is over after %i rounds'%num_rounds)
