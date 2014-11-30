@@ -7,6 +7,7 @@ also updates their fitness.
 
 from constants import *
 from numpy.random import poisson
+from random import random
 
 def gameMaster(agent_a, agent_b):
     agent_a_actions = ''
