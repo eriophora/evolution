@@ -85,7 +85,8 @@ experiments = zip(experiment_list, iteration_list, constants_list, statistics_li
 def cleanModules():
     # removes all the goddamn modules from pythons goddamn namespace
     # WHY IS THIS SO HARD TO DO!?
-    modules = ['agent','constants','gameMaster','genome','tile','trust','world']
+    modules = ['agent','constants','gameMaster','genome',
+               'tile','trust','world','constants_override']
     for m in modules:
         if m in sys.modules:
             del(sys.modules[m])
