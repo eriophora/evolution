@@ -115,14 +115,14 @@ class World():
         self.mean_per_game_fitness.append(sum([x.fitness for x in self.agents]) * 1./tot_games)
         self.cur_mean_fitness = float(mean([x.fitness for x in self.agents]))
         self.mean_fitness.append(self.cur_mean_fitness)
-        printMsg('Fitness for iteration %i is %.3f (%.3fpg)'%(self.num_iterations, self.cur_mean_fitness, self.mean_per_game_fitness[-1]),2)
         below_avg_agents = sum([1 for x in self.agents if x.fitness < self.cur_mean_fitness])
         self.die_offs.append(below_avg_agents)
+        printMsg('Iteration %i is Complete. Fitness: %.3f (%.3fpg) %i agents below avg fitness'%(self.num_iterations, self.cur_mean_fitness, self.mean_per_game_fitness[-1],below_avg_agents),2)
         self.updateStatistics()
         if regen_children:
             self.generateChildren()
-        printMsg('Iteration %i Complete. %i agents below avg fitness'%(self.num_iterations, below_avg_agents), 2)
-        printMsg('Average Trust: %.3f'%mean([x.trust_parameter for x in self.agents]), 2)
+        #printMsg('Iteration %i Complete. %i agents below avg fitness'%(self.num_iterations, below_avg_agents), 2)
+        #printMsg('Average Trust: %.3f'%mean([x.trust_parameter for x in self.agents]), 2)
         self.mean_trust.append(mean([x.trust_parameter for x in self.agents]))
     def generateChildren(self):
         # Because of rounding errors, instead of directly generating children
