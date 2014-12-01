@@ -117,7 +117,7 @@ class World():
         self.mean_fitness.append(self.cur_mean_fitness)
         below_avg_agents = sum([1 for x in self.agents if x.fitness < self.cur_mean_fitness])
         self.die_offs.append(below_avg_agents)
-        printMsg('Iteration %i is Complete. Fitness: %.3f (%.3fpg) %i agents below avg fitness'%(self.num_iterations, self.cur_mean_fitness, self.mean_per_game_fitness[-1],below_avg_agents),2)
+        printMsg('Iteration %i is Complete. Fitness: %.3f (%.3fpg) %i agents below avg fitness'%(self.num_iterations, self.cur_mean_fitness, self.mean_per_game_fitness[-1],below_avg_agents),3)
         self.updateStatistics()
         if regen_children:
             self.generateChildren()

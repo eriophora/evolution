@@ -300,7 +300,7 @@ OVERRIDE_ASSERTIONS = False
 # VERBOSITY is the verboseness of the output. It is an integer, where
 # the integer indicates the priority of a given message required to
 # print out. Higher values of VERBOSITY mean that less is printed.
-VERBOSITY = 2
+VERBOSITY = 3
 
 # printMsg accepts a string <msg> and a number <priority> and decides
 # whether or not to print out that message based on the value of
