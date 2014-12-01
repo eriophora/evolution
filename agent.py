@@ -41,7 +41,7 @@ class Agent():
         self.ID = returnRandomID()
         self.parents = []
         self.games_played = 0
-        if not self.tile == None:
+        if tile != None:
             tile.acceptAgent(self)
         self.initializeStatistics()
     def initializeStatistics(self):
