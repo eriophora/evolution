@@ -116,7 +116,6 @@ class World():
         self.cur_mean_fitness = float(mean([x.fitness for x in self.agents]))
         self.mean_fitness.append(self.cur_mean_fitness)
         printMsg('Fitness for iteration %i is %.3f (%.3fpg)'%(self.num_iterations, self.cur_mean_fitness, self.mean_per_game_fitness[-1]),2)
-        tot_above_avg_fitness = sum([x.fitness for x in self.agents if x.fitness >= self.cur_mean_fitness])
         below_avg_agents = sum([1 for x in self.agents if x.fitness < self.cur_mean_fitness])
         self.die_offs.append(below_avg_agents)
         self.updateStatistics()
@@ -130,30 +129,48 @@ class World():
         # sequentially, we have to create a discrete distribution and sample
         # from it. Which, while not being directly fair, works well enough.
         # current_mean_fitness - short version
-        cmf = self.cur_mean_fitness
-        # total_above_average_fitness - short version
-        taaf = sum([(x.fitness - cmf) for x in self.agents if x.fitness >= cmf])
-        #dist = [(x.fitness - cmf) * 1./taaf for x in self.agents if x.fitness >= cmf]
-        # this method deals with negative numbers better.
-        dist = [x.fitness for x in self.agents if x.fitness >= cmf]
-        if sum(dist) <= 0:
-            printMsg('Iteration %i has experienced negative or zero fitness!'%self.num_iterations, 3)
-            dist = [1./len(self.agents) for x in self.agents]
+        if not SAMPLE_ALL_AGENTS:
+            cmf = self.cur_mean_fitness
+            # total_above_average_fitness - short version
+            taaf = sum([(x.fitness - cmf) for x in self.agents if x.fitness >= cmf])
+            #dist = [(x.fitness - cmf) * 1./taaf for x in self.agents if x.fitness >= cmf]
+            # this method deals with negative numbers better.
+            dist = [x.fitness for x in self.agents if x.fitness >= cmf]
+            if sum(dist) <= 0:
+                printMsg('Iteration %i has experienced negative or zero fitness!'%self.num_iterations, 3)
+                dist = [1./len(self.agents) for x in self.agents]
+            else:
+                dist = [x*1./sum(dist) for x in dist]
+            #good_agents = filter(lambda x: x.fitness >= cmf, self.agents)
+            idx = [n for n,a in enumerate(self.agents) if a.fitness >= cmf]
+            #r = rvd(values=(range(len(dist)), dist))
+            r = rvd(values=(idx, dist))
+            having_babies_IDX = r.rvs(size=NUM_AGENTS)
+            # now that we've sampled from the parents, instruct them to each have
+            # kids
+            babies = []
+            for x in having_babies_IDX:
+                babies.append(self.agents[x].reproduce())
+            for x in self.agents:
+                x.die()
+            self.agents = babies
         else:
-            dist = [x*1./sum(dist) for x in dist]
-        #good_agents = filter(lambda x: x.fitness >= cmf, self.agents)
-        idx = [n for n,a in enumerate(self.agents) if a.fitness >= cmf]
-        #r = rvd(values=(range(len(dist)), dist))
-        r = rvd(values=(idx, dist))
-        having_babies_IDX = r.rvs(size=NUM_AGENTS)
-        # now that we've sampled from the parents, instruct them to each have
-        # kids
-        babies = []
-        for x in having_babies_IDX:
-            babies.append(self.agents[x].reproduce())
-        for x in self.agents:
-            x.die()
-        self.agents = babies
+            dist = np.array([x.fitness for x in self.agents])
+            if np.any(dist < 0):
+                dist -= np.min(dist)
+            if not np.any(dist != 0):
+                printMsg('Iteration %i has experienced zero fitness!'%self.num_iterations, 3)
+                dist = np.array([1.]*NUM_AGENTS)
+            dist /= np.sum(dist)
+            r = rvd(values=(range(NUM_AGENTS), dist))
+            having_babies_IDX = r.rvs(size=NUM_AGENTS)
+            babies = []
+            for x in having_babies_IDX:
+                babies.append(self.agents[x].reproduce())
+            for x in self.agents:
+                x.die()
+            self.agents = babies
+
 
 
 

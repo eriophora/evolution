@@ -79,7 +79,7 @@ GENOME_TYPE = 'unary'
 # 'unary', then a GENE_LENGTH of n means that 2^(n+1)-1 genes are
 # defiend, if GENOME_TYPE is 'binary', then (1/3)*(4^(n+1)-1) genes are
 # defined.
-GENE_LENGTH = 4
+GENE_LENGTH = 6
 
 # NAME_LENGTH is the number of characters in the 'name' (a string that
 # may or may not uniquely identify this agent). The name can be thought
@@ -102,6 +102,11 @@ LEARN_TRUST = True
 # LEARNING_RATE is the SGD learning rate, which is used if LEARN_TRUST
 # is true.
 LEARNING_RATE = 0.05
+
+# SAMPLE_ALL_AGENTS is a boolean that indicates whether or not only the
+# top half of agents are to reproduce (false), or if we sample from
+# all agents according to their contribution to the total fitness.
+SAMPLE_ALL_AGENTS = True
 
 # lossFunction defines the function to execute for updating the weights.
 # it's not actually a true loss function, but is instead its gradient.

@@ -41,7 +41,8 @@ class Agent():
         self.ID = returnRandomID()
         self.parents = []
         self.games_played = 0
-        tile.acceptAgent(self)
+        if not self.tile == None:
+            tile.acceptAgent(self)
         self.initializeStatistics()
     def initializeStatistics(self):
         # instantiates the data structure to hold the statistics
@@ -54,6 +55,9 @@ class Agent():
         stats = dict()
         stats['popular'] = [0, 0] # the frequency with which other agents agree to play with this agent
         stats['selective'] = [0, 0] # the frequency with which this agent agrees to play with other agents
+        stats['cooperator'] = [0, 0] # the fraction of the time the agent cooperates.
+        stats['defector'] = [0, 0] # the fraction of the time the agent defects
+        stats['quitter'] = [0, 0] # the fraction of the time the agent quits
         stats['collaborator'] = [0, 0] # cooperated with a cooperator
         stats['sucker'] = [0, 0] # cooperated against a defector
         stats['traitor'] = [0, 0] # defected against a cooperator
@@ -81,6 +85,15 @@ class Agent():
         # decides on what action to take given the game's current history
         action_code = self.genome.getAction(history)
         signal = self.performAction(self, action_code)
+        self.stats['cooperator'][1] += 1
+        self.stats['defector'][1] += 1
+        self.stats['quitter'][1] += 1
+        if signal == COOP_SIGNAL:
+            self.stats['cooperator'][0] += 1
+        if signal == DEFECT_SIGNAL:
+            self.stats['defector'][0] += 1
+        if signal == QUIT_SIGNAL:
+            self.stats['quitter'][0] += 1
         if len(history):
             opp_move = int(history[-1])
             for cur_stat in self.stats_to_increment[opp_move]:
