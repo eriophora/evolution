@@ -43,7 +43,8 @@ statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
                    'selective','traitor','retreating','popular',
                    'forgiving','prisoner','timid','nice','tot_games',
                    'per_game_fitness','mean_per_game_fitness',
-                   'tot_games_played','cooperator','defector','quitter']
+                   'tot_games_played','cooperator','defector','quitter',
+                   'optimality']
 save_the_world = [True, False, False, False, True, False, True,
                   False, False, False] * 3
 save_tile_stats = True
