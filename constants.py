@@ -106,7 +106,7 @@ LEARNING_RATE = 0.05
 # SAMPLE_ALL_AGENTS is a boolean that indicates whether or not only the
 # top half of agents are to reproduce (false), or if we sample from
 # all agents according to their contribution to the total fitness.
-SAMPLE_ALL_AGENTS = True
+SAMPLE_ALL_AGENTS = False
 
 # lossFunction defines the function to execute for updating the weights.
 # it's not actually a true loss function, but is instead its gradient.
