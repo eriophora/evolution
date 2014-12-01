@@ -44,7 +44,7 @@ statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
                    'forgiving','prisoner','timid','nice','tot_games',
                    'per_game_fitness','mean_per_game_fitness',
                    'tot_games_played','cooperator','defector','quitter']
-save_the_world = [True, False, False, False, False, False, True,
+save_the_world = [True, False, False, False, True, False, True,
                   False, False, False] * 3
 save_tile_stats = True
 ########################################################################
@@ -109,6 +109,8 @@ for exp, iters, const, stats in experiments:
     shutil.copy(constant_file, target_constant_file)
     exp_root = os.path.join(root, exp)
     exp_iter_root = os.path.join(exp_root, 'iterations')
+    if os.path.exists(exp_root):
+        continue
     mkdir(exp_root)
     mkdir(exp_iter_root)
     # write out some parameters

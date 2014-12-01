@@ -23,18 +23,19 @@ import pdb, sys
 pre_experiment_list = ['baseline','always_play','no_world',
                    'only_CD','only_CD_always_play',
                    'symmetric_payoff','long_genes',
-                   'traitor_superpayoff','nonnegative_payoff']
-experiments_list = [x + '_1' for x in pre_experiments_list]
-experiments_list += [x + '_2' for x in pre_experiments_list]
-experiments_list += [x + '_3' for x in pre_experiments_list]
+                   'traitor_superpayoff','nonnegative_payoff',
+                   'bigsim']
+experiment_list = [x + '_1' for x in pre_experiment_list]
+experiment_list += [x + '_2' for x in pre_experiment_list]
+experiment_list += [x + '_3' for x in pre_experiment_list]
 # iteration_list is a list of the number of iterations to run for each
 # experiment.
-iteration_list = [400,400,400,400,400,400,600,400,400]*3
+iteration_list = [400,400,400,400,400,400,600,400,400,400]*3
 # constants_list is a list of files containing constants.
 constants_list = ['baseline','always_play','high_permeability',
                   'onlyCD','always_play_onlyCD',
                   'symmetric_payoff','long_genes','traitor_megapayoff',
-                  'nonnegative_payoff']*3
+                  'nonnegative_payoff','bigsim']*3
 # statistics_list is a list of all the statistics to write out each
 # iteration. It must be a list, but may also be a list of lists.
 statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
@@ -42,15 +43,17 @@ statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
                    'selective','traitor','retreating','popular',
                    'forgiving','prisoner','timid','nice','tot_games',
                    'per_game_fitness','mean_per_game_fitness',
-                   'tot_games_played']
-save_the_world = True
+                   'tot_games_played','cooperator','defector','quitter',
+                   'optimality']
+save_the_world = [True, False, False, False, True, False, True,
+                  False, False, False] * 3
 save_tile_stats = True
 ########################################################################
 ##########CONSTANT PARAMETERS###########################################
 ########################################################################
 # DO NOT CHANGE THESE
 home = os.getenv("HOME")
-subdirs = 'Dropbox/Class/CS221/'
+subdirs = ''
 root = os.path.join(home, subdirs, 'evolution/experiments')
 constant_dir = os.path.join(home, subdirs, 'evolution/constant_files') # the directory that contains all the constants
 abs_root = os.path.join(home, subdirs, 'evolution/')
@@ -107,6 +110,8 @@ for exp, iters, const, stats in experiments:
     shutil.copy(constant_file, target_constant_file)
     exp_root = os.path.join(root, exp)
     exp_iter_root = os.path.join(exp_root, 'iterations')
+    if os.path.exists(exp_root):
+        continue
     mkdir(exp_root)
     mkdir(exp_iter_root)
     # write out some parameters
@@ -121,8 +126,9 @@ for exp, iters, const, stats in experiments:
     f.close()
     import world
     w = world.World()
-    for i in range(iters):
+    for i in range(iters-1):
         w.iterate()
+    w.iterate(regen_children=False)
     for stat in stats:
         if stat == 'mean_fitness':
             fname = os.path.join(exp_root, stat)

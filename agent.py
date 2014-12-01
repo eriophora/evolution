@@ -44,6 +44,16 @@ class Agent():
         if tile != None:
             tile.acceptAgent(self)
         self.initializeStatistics()
+    def compute_optimality(self):
+        # compares a gene map g to the optimal gene map
+        g = self.genome.gene_map
+        cor = 0
+        for k in g.keys():
+            if not len(k):
+                cor += g[k] == COOP_SIGNAL
+            else:
+                cor += int(k[-1]) == g[k]
+        return cor * 1./len(g)
     def initializeStatistics(self):
         # instantiates the data structure to hold the statistics
         # in lieu of the old (gene-centric) way of computing statistics,
@@ -68,6 +78,7 @@ class Agent():
         stats['vengeful'] = [0, 0] # defected following a defection
         stats['timid'] = [0, 0] # quit following a cooperation
         stats['retreating'] = [0, 0] # quit following a defection
+        stats['optimality'] = [self.compute_optimality(), 1] # the closeness of the agent's genome to an optimal (tit-for-tat) genome.
         self.stats = stats
         # stats_to_increment is a map of stats whose total must be
         # incremented given the opponent's previous action
