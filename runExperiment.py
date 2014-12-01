@@ -13,23 +13,28 @@ import sys
 import shutil
 import cPickle
 from numpy import mean
+import numpy as np
 import pdb, sys
 ########################################################################
 ##########CONFIGURATION OPTIONS#########################################
 ########################################################################
 # experiment_list is a list of experiments to perform. It must be a
 # list.
-experiment_list = ['nd_optimal_play','nd_worst_play','nd_baseline',
-                   'nd_always_play','nd_no_world','nd_only_CD',
-                   'nd_only_CD_always_play','nd_symmetric_payoff',
-                   'nd_long_genes']
+pre_experiment_list = ['baseline','always_play','no_world',
+                   'only_CD','only_CD_always_play',
+                   'symmetric_payoff','long_genes',
+                   'traitor_superpayoff','nonnegative_payoff']
+experiments_list = [x + '_1' for x in pre_experiments_list]
+experiments_list += [x + '_2' for x in pre_experiments_list]
+experiments_list += [x + '_3' for x in pre_experiments_list]
 # iteration_list is a list of the number of iterations to run for each
 # experiment.
-iteration_list = [10,10,500,1000,500,1000,1000,500,1000]
+iteration_list = [400,400,400,400,400,400,600,400,400]*3
 # constants_list is a list of files containing constants.
-constants_list = ['all_c','all_d','baseline','always_play',
-                  'high_permeability','onlyCD','always_play_onlyCD',
-                  'symmetric_payoff','long_genes']
+constants_list = ['baseline','always_play','high_permeability',
+                  'onlyCD','always_play_onlyCD',
+                  'symmetric_payoff','long_genes','traitor_megapayoff',
+                  'nonnegative_payoff']*3
 # statistics_list is a list of all the statistics to write out each
 # iteration. It must be a list, but may also be a list of lists.
 statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
@@ -38,16 +43,17 @@ statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
                    'forgiving','prisoner','timid','nice','tot_games',
                    'per_game_fitness','mean_per_game_fitness',
                    'tot_games_played']
-save_the_world = [False, False, True, False, False, True, False, True]
+save_the_world = True
 save_tile_stats = True
 ########################################################################
 ##########CONSTANT PARAMETERS###########################################
 ########################################################################
 # DO NOT CHANGE THESE
 home = os.getenv("HOME")
-root = os.path.join(home, 'Dropbox/Class/CS221/evolution/experiments')
-constant_dir = os.path.join(home,'Dropbox/Class/CS221/evolution/constant_files') # the directory that contains all the constants
-abs_root = os.path.join(home,'Dropbox/Class/CS221/evolution/')
+subdirs = 'Dropbox/Class/CS221/'
+root = os.path.join(home, subdirs, 'evolution/experiments')
+constant_dir = os.path.join(home, subdirs, 'evolution/constant_files') # the directory that contains all the constants
+abs_root = os.path.join(home, subdirs, 'evolution/')
 ########################################################################
 ########################################################################
 ########################################################################
@@ -119,44 +125,27 @@ for exp, iters, const, stats in experiments:
         w.iterate()
     for stat in stats:
         if stat == 'mean_fitness':
-            f = open(os.path.join(exp_root, stat),'w')
-            for val in w.mean_fitness:
-                f.write('%.3f\n'%val)
-            f.close()
+            fname = os.path.join(exp_root, stat)
+            np.save(fname, w.mean_fitness)
         elif stat == 'mean_trust':
-            f = open(os.path.join(exp_root, stat),'w')
-            for val in w.mean_trust:
-                f.write('%.3f\n'%val)
-            f.close()
+            fname = os.path.join(exp_root, stat)
+            np.save(fname, w.mean_trust)
         elif stat == 'die_offs':
-            f = open(os.path.join(exp_root, stat),'w')
-            for val in w.mean_trust:
-                f.write('%.3f\n'%val)
-            f.close()
+            fname = os.path.join(exp_root, stat)
+            np.save(fname, w.die_offs)
         elif stat == 'mean_per_game_fitness':
-            f = open(os.path.join(exp_root, stat),'w')
-            for val in w.mean_per_game_fitness:
-                f.write('%.3f\n'%val)
-            f.close()
+            fname = os.path.join(exp_root, stat)
+            np.save(fname, w.mean_per_game_fitness)
         elif stat == 'tot_games_played':
-            f = open(os.path.join(exp_root, stat),'w')
-            for val in w.tot_games_played:
-                f.write('%.3f\n'%val)
-            f.close()
+            fname = os.path.join(exp_root, stat)
+            np.save(fname, w.tot_games_played)
         else:
             if save_tile_stats:
-                for i in range(iters):
-                    f = open(os.path.join(exp_iter_root, '%06i_'%i+stat),'w')
-                    for row in w.statistics[stat][i]:
-                        for tile in row:
-                            f.write('%.3f,'%tile)
-                        f.write('\n')
-                    f.close()
+                fname = os.path.join(exp_iter_root,stat)
+                np.save(fname, w.statistics[stat])
             if stat in w.global_statistics:
-                f = open(os.path.join(exp_root, 'global_'+stat), 'w')
-                for i in w.global_statistics[stat]:
-                    f.write('%.3f\n'%i)
-            f.close()
+                fname = os.path.join(exp_root, 'global_'+stat)
+                np.save(fname, w.global_statistics[stat])
     f = open(os.path.join(exp_root, 'lineages'),'w')
     for x in w.agents:
         f.write('%s\n'%x.parents)

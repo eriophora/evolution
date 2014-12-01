@@ -57,7 +57,7 @@ class World():
                         new_stats[x][y] = mean([z.trust_parameter for z in tile.agents])
                     elif i == 'per_game_fitness':
                         if self.statistics['tot_games'][-1][x][y] > 0:
-                            new_stats[x][y] = sum([z.fitness for z in tile.agents])*.1/self.statistics['tot_games'][-1][x][y]
+                            new_stats[x][y] = sum([z.fitness for z in tile.agents])*1./self.statistics['tot_games'][-1][x][y]
                     elif i != 'tot_games': # tot_games updated elsewhere
                         new_stats[x][y] = mean([z.stats[i][0]*1./z.stats[i][1] for z in tile.agents if z.stats[i][1] > 0])
             if i!='tot_games':
@@ -86,7 +86,7 @@ class World():
         tile = choice(choice(self.tiles))
         next_agent = Agent(tile)
         self.agents.append(next_agent)
-    def iterate(self):
+    def iterate(self,regen_children = True):
         # the main iteration function. iterates all of the agents
         # and all of the tiles.
         self.num_iterations += 1
@@ -120,7 +120,8 @@ class World():
         below_avg_agents = sum([1 for x in self.agents if x.fitness < self.cur_mean_fitness])
         self.die_offs.append(below_avg_agents)
         self.updateStatistics()
-        self.generateChildren()
+        if regen_children:
+            self.generateChildren()
         printMsg('Iteration %i Complete. %i agents below avg fitness'%(self.num_iterations, below_avg_agents), 2)
         printMsg('Average Trust: %.3f'%mean([x.trust_parameter for x in self.agents]), 2)
         self.mean_trust.append(mean([x.trust_parameter for x in self.agents]))

@@ -4,3 +4,4 @@ allowing for end-game strategy.
 '''
 GENE_LENGTH = 8
 EXPECTED_TURNS = 5
+HISTORY_LENGTH = GENE_LENGTH
