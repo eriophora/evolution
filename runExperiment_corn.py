@@ -35,7 +35,7 @@ iteration_list = [400,400,400,400,400,400,600,400,400,400]*3
 constants_list = ['baseline','always_play','high_permeability',
                   'onlyCD','always_play_onlyCD',
                   'symmetric_payoff','long_genes','traitor_megapayoff',
-                  'nonnegative_payoff','bigsim']*3
+                  'nonegative_payoff','bigsim']*3
 # statistics_list is a list of all the statistics to write out each
 # iteration. It must be a list, but may also be a list of lists.
 statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',

@@ -1,7 +1,9 @@
 '''
-Agents may either cooperate or defect -- there is no option to quit a
-game.
+50x50 board with 30,000 agents -- agents can only defect or cooperate, and must always play.
 '''
+N_COLS = 50
+N_ROWS = 50
+NUM_AGENTS = 50000
 def onlyCD(agent, action):
     if not action:
         return agent.cooperate()

@@ -8,3 +8,4 @@ def onlyCD(agent, action):
     else:
         return agent.defect()
 defaultPerformAction = onlyCD
+N_POS_ACTIONS = 2

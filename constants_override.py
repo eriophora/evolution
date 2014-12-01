@@ -1,28 +1,3 @@
 '''
-Always cooperate -- this is the optimal play version
+Overrides nothing.
 '''
-def allC(agent, action):
-    # always cooperate (optimal play)
-    return agent.cooperate()
-defaultPerformAction = allC
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
