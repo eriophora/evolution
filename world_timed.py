@@ -31,7 +31,7 @@ class World():
         self.tot_games_played = []
         self.cur_mean_fitness = 0
         self.initializeStatistics()
-        self.times = {'gaming':[],'stats':[],'children':[]}
+        self.times = {'gaming':[],'stats':[],'children':[],'moving':[]}
     def initializeStatistics(self):
         # creates the data structure that will hold tile-by-tile statistics
         statistic_names = ['num_agents','fitness','trust','per_game_fitness','tot_games'] + self.agents[0].stats.keys()

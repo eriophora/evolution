@@ -142,17 +142,17 @@ def normalPerformAction(agent, action):
         return agent.quit()
 
 def onlyCDQ(agent, action):
-    if action == 0:
+    if action == COOP_SIGNAL:
         return agent.cooperate()
-    elif action == 1:
+    elif action == DEFECT_SIGNAL:
         return agent.defect()
-    elif action == 2:
+    elif action == QUIT_SIGNAL:
         return agent.quit()
 
 def onlyCD(agent, action):
-    if not action:
+    if action == COOP_SIGNAL:
         return agent.cooperate()
-    else:
+    elif action == DEFECT_SIGNAL:
         return agent.defect()
 
 def allD(agent, action):

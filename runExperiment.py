@@ -20,15 +20,15 @@ import pdb, sys
 ########################################################################
 # experiment_list is a list of experiments to perform. It must be a
 # list.
-pre_experiment_list = ['deep_run_small']
+pre_experiment_list = ['deep_run_small','deep_run_mega_simpleGenes']
 experiment_list = [x + '_1' for x in pre_experiment_list]
-experiment_list += [x + '_2' for x in pre_experiment_list]
-experiment_list += [x + '_3' for x in pre_experiment_list]
+#experiment_list += [x + '_2' for x in pre_experiment_list]
+#experiment_list += [x + '_3' for x in pre_experiment_list]
 # iteration_list is a list of the number of iterations to run for each
 # experiment.
-iteration_list = [300000]*3
+iteration_list = [100000,100000]*1
 # constants_list is a list of files containing constants.
-constants_list = ['smallsim']*3
+constants_list = ['smallsim','megasim_simpleGenes']*1
 # statistics_list is a list of all the statistics to write out each
 # iteration. It must be a list, but may also be a list of lists.
 statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
@@ -38,7 +38,7 @@ statistics_list = ['mean_fitness', 'die_offs','num_agents','fitness',
                    'per_game_fitness','mean_per_game_fitness',
                    'tot_games_played','cooperator','defector','quitter',
                    'optimality']
-save_the_world = [True] * 3
+save_the_world = [True, False] * 1
 save_tile_stats = True
 ########################################################################
 ##########CONSTANT PARAMETERS###########################################

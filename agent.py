@@ -113,10 +113,9 @@ class Agent():
         return signal
     def reproduce(self):
         # returns a child of this agent.
-        child = Agent(self.tile, None, self.trust_parameter, self.performAction)
         childGenome = self.genome.mutate()
-        child.genome = childGenome
-        child.name = child.genome.name
+        child = Agent(self.tile, childGenome, self.trust_parameter, self.performAction)
+        #child.name = child.genome.name
         child.parents = [x for x in self.parents]
         child.parents.append((self.ID, self.fitness))
         if LEARN_TRUST:
